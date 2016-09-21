@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React Demo</title>
+    <script src="https://npmcdn.com/react@15.3.0/dist/react.js"></script>
+    <script src="https://npmcdn.com/react-dom@15.3.0/dist/react-dom.js"></script>
+    <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="demo">
+    </div>
+
+<script type="text/babel">
+  var BasicReactDemoComponent = React.createClass({
+      render: function() {
+        return (
+          <div>
+            <p> 
+              It is {this.props.date.toTimeString()} <br/>
+              <span>Demo component using react! </span>
+              <span>Good Job {this.props.yourname}!</span>
+            </p>
+          </div>
+        );
+      }
+  });
+
+  setInterval(function() {
+      ReactDOM.render(
+        <BasicReactDemoComponent date={new Date()} yourname={'Arun Palhora'}/>,
+          document.getElementById('demo')
+      );
+  }, 500);
+</script>
+
+  </body>
+</html>
