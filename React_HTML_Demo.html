@@ -16,10 +16,11 @@
       render: function() {
         return (
           <div>
-            <p> 
-              It is {this.props.date.toTimeString()} <br/>
-              <span>Demo component using react! </span>
-              <span>Good Job {this.props.yourname}!</span>
+            <p> <h2>
+              It is {this.props.date.toTimeString()} <br/><br/>
+              <span>Demo component using react! </span><br/><br/>
+              <span>See Datetime is refreshing, but this "{this.props.yourname}" text is not!</span>
+              </h2>
             </p>
           </div>
         );
@@ -28,7 +29,7 @@
 
   setInterval(function() {
       ReactDOM.render(
-        <BasicReactDemoComponent date={new Date()} yourname={'Arun Palhora'}/>,
+        <BasicReactDemoComponent date={new Date()} yourname={'Awesome Appirio, Salesforce and Facebook'}/>,
           document.getElementById('demo')
       );
   }, 500);
