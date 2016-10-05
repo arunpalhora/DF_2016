@@ -7,11 +7,14 @@
     <script src="https://npmcdn.com/react-dom@15.3.0/dist/react-dom.js"></script>
     <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
   </head>
+  
   <body>
+
     <div id="demo">
     </div>
 
 <script type="text/babel">
+
   var BasicReactDemoComponent = React.createClass({
       render: function() {
         return (
@@ -19,7 +22,8 @@
             <p> <h2>
               It is {this.props.date.toTimeString()} <br/><br/>
               <span>Demo component using react! </span><br/><br/>
-              <span>See Datetime is refreshing, but this "{this.props.yourname}" text is not!</span>
+              <span>See Datetime is refreshing, 
+                but this "{this.props.myText}" text is not refreshing.</span>
               </h2>
             </p>
           </div>
@@ -29,10 +33,11 @@
 
   setInterval(function() {
       ReactDOM.render(
-        <BasicReactDemoComponent date={new Date()} yourname={'Awesome Appirio, Salesforce and Facebook'}/>,
+        <BasicReactDemoComponent date={new Date()} myText={'Awesome Appirio, Salesforce and Facebook!!!'}/>,
           document.getElementById('demo')
       );
   }, 500);
+  
 </script>
 
   </body>
