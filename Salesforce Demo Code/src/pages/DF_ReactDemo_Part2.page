@@ -1,0 +1,253 @@
+<apex:page showHeader="true" sidebar="false" controller="DF_ReactDemoController">
+  <apex:includeScript value="https://npmcdn.com/react@15.3.1/dist/react.min.js"/>
+  <apex:includeScript value="https://npmcdn.com/react-dom@15.3.1/dist/react-dom.min.js"/>
+  <apex:includeScript value="https://npmcdn.com/babel-core@5.8.38/browser.min.js"/>
+  <apex:includeScript value="https://npmcdn.com/jquery@3.1.0/dist/jquery.min.js"/>
+  <apex:includeScript value="{!URLFOR($Resource.react_intl_1_2_0, '/react-intl-1.2.0/dist/react-intl.min.js')}"/>
+
+  <div>
+    <div id="fastVfWithReactDemo"/>
+  </div>
+
+  <script type="text/babel">
+    var IntlMixin = ReactIntl.IntlMixin;
+    var FormattedNumber = ReactIntl.FormattedNumber;
+    var FormattedDate = ReactIntl.FormattedDate;
+
+
+    var Opportunities = React.createClass({
+      getInitialState: function() {
+        return {
+        };
+      },
+
+      render: function() {
+        var opptyRows = [];
+        return (
+          <table  className="tWidth">
+            <tr>
+              <th className="thCol col0">
+                  Name
+              </th>
+              <th className="thCol col1">
+                  Stage
+              </th>
+              <th className="thCol col2">
+                  Amount (USD)
+              </th>
+              <th className="thCol col3">
+                  Close Date
+              </th>
+              <th className="thCol col4">
+                  Next Step
+              </th>
+              <th className="thCol col5">
+                  Description
+              </th>
+            </tr>
+            {opptyRows}
+          </table>
+        );
+      }
+    });
+
+
+
+    var AccountRow = React.createClass({
+      render: function() {
+        return (
+          <tr>
+            <td className={this.props.selectedAcctCls}>
+              <a onClick={this.props._callBackLoadOpptys.bind(null, this.props.Id)} style={{cursor: 'pointer'}}>{this.props.Name}</a>
+            </td>
+            <td className={this.props.selectedAcctCls}>
+              <FormattedNumber value={this.props.AnnualRevenue} minimumFractionDigits="2" maximumFractionDigits="2"/>
+            </td>
+          </tr>
+        );
+      }
+    });
+
+
+
+    var Accounts = React.createClass({
+      componentDidMount: function() {
+        var t = this;
+        DF_ReactDemoController.loadAccounts(
+          function(result, event) {
+            if (event.statusCode == 200) {
+              t.setState({
+                accounts: result
+              });
+            }
+          },
+          {escape: false, dataType: 'json', timeout: 60000}
+        );
+      },
+
+      getInitialState: function() {
+        return {
+          accounts: [{Id: '', Name: '', AnnualRevenue: ''}],
+          selectedAccountId: ''
+        };
+      },
+
+      render: function() {
+        var rows = [];
+        var t = this;
+        var selectedActCls = '';
+        this.state.accounts.forEach(function(a) {
+          selectedActCls = t.props.selectedAccountId===a.Id ? 'selAct' : '';
+
+          rows.push(
+            <AccountRow Name={a.Name} 
+              AnnualRevenue={a.AnnualRevenue} 
+              Id={a.Id}
+              key={a.Id}
+              selectedAcctCls={selectedActCls}
+              _callBackLoadOpptys={t.props._loadOpptysCallback}/>);
+        });
+
+        return (
+          <div className="minHeight">
+            <table className="tWidth">
+              <tr>
+                <th className="thCol">Name</th>
+                <th className="thCol">Annual Revenue</th>
+              </tr>
+              {rows}
+            </table>
+          </div>
+        );
+      }
+    });
+
+    
+
+    var ReactDemoApp = React.createClass({
+      mixins: [IntlMixin],
+
+      getInitialState: function() {
+        return {
+          selectedAccountId: ''
+        };
+      },
+
+      _loadOpptys: function(accountId, e) {
+        e.preventDefault();
+        if (this.state.selectedAccountId != accountId) {
+          this.setState({
+            selectedAccountId: accountId
+          });
+        }
+      },
+
+      render: function() {
+        return (
+          <div>
+            <div className="demoHeader">
+                 Account With Opportunities - ReactJs Demo
+            </div>
+            <table className="tWidth">
+              <tr>
+                <td className="bRight"><Accounts _loadOpptysCallback={this._loadOpptys} selectedAccountId={this.state.selectedAccountId}/></td>
+                <td className="bLeft"><Opportunities/></td>
+              </tr>
+            </table>
+          </div>
+        );
+      }
+    });
+
+
+    ReactDOM.render(
+      <ReactDemoApp />, 
+      document.getElementById('fastVfWithReactDemo')
+    );
+
+  </script>
+
+  <style>
+    .demoHeader{
+      background: #ddd;
+      text-align: center;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #555;
+      padding: 4px;
+      border: 1px solid #007fcc;
+    }
+    .tWidth {
+      width: 100%;
+    }
+    .minHeight {
+      min-height: 300px;
+    }
+    .bLeft {
+      border: none;
+      vertical-align: top;
+      border-left: 2px solid #007fcc;
+      padding-left: 10px;
+      width: 75%;
+    }
+    .bRight {
+      border: none;
+      vertical-align: top;
+      border-right: 2px solid #007fcc;
+      width: 25%;
+    }
+    .thCol {
+      background: #99CBEA;
+      color: #333;
+      font-size: 1.1em;
+      border: 1px solid #dddddd;
+    }
+    .sIcon {
+      display: inline;
+      margin-bottom: -3px;
+      padding-left: 2px;
+      width: 14px;
+      height: 15px;
+    }
+    .col0 {
+      min-width: 200px;  
+      max-width: 350px
+    }
+    .col1 {
+      min-width: 120px;  
+      max-width: 200px
+    }
+    .col2 {
+      min-width: 150px;  
+      max-width: 200px
+    }
+    .col3 {
+      min-width: 120px;  
+      max-width: 150px
+    }
+    .col4 {
+      min-width: 120px;  
+      max-width: 250px
+    }
+    .col5 {
+      min-width: 150px;  
+      max-width: 400px
+    }
+    .selAct{
+      background: yellow;
+    }
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td, th {
+      text-align: left;
+      padding: 8px;
+    }
+    tr:nth-child(even) {
+      background-color: #eee;
+    }
+  </style>
+</apex:page>
